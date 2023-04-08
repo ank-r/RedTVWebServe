@@ -1,0 +1,35 @@
+server:
+  port: 8000
+#  http2:
+#    enabled: true
+
+spring:
+#  热部署
+  devtools:
+    restart:
+      enabled: true
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+#    启用的数据库
+    database: 0
+  #数据库
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    # 192.168.43.128
+    url: jdbc:mysql://127.0.0.1:3306/redtv?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: ran123456
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100000000MB
+      max-request-size: 1024000000MB
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
