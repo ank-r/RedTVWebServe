@@ -36,4 +36,8 @@ public interface ArticleService {
 
 
     List<ArticleInfo> getExamineList();
+
+    List<ArticleInfo> getCategoryList(int categoryId);
+
+    List<ArticleInfo> getSearchList(String searchWorld);
 }

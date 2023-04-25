@@ -1,5 +1,6 @@
 package com.redtv.redtvwebserve.cotroller;
 
+import com.redtv.redtvwebserve.dto.ExamineVideoDto;
 import com.redtv.redtvwebserve.dto.VideoArticleDto;
 import com.redtv.redtvwebserve.service.ArticleService;
 import com.redtv.redtvwebserve.service.LikeService;
@@ -57,7 +58,7 @@ public class VideoController {
         System.out.println("---------搜索关键词---"+searchWorld);
 
 
-        List<ArticleInfo> videoInfoList = articleService.getVideoList();
+        List<ArticleInfo> videoInfoList = articleService.getSearchList(searchWorld);
 
         return ResponseDetails.ok(videoInfoList);
     }
@@ -66,7 +67,7 @@ public class VideoController {
     public ResponseDetails getCategoryList(@RequestParam("categoryId") int categoryId){
         System.out.println("---------分类查询ID---"+categoryId);
 
-        List<ArticleInfo> videoInfoList = articleService.getVideoList();
+        List<ArticleInfo> videoInfoList = articleService.getCategoryList(categoryId);
 
         return ResponseDetails.ok(videoInfoList);
     }
@@ -78,6 +79,15 @@ public class VideoController {
         List<ArticleInfo> videoInfoList = articleService.getExamineList();
 
         return ResponseDetails.ok(videoInfoList);
+    }
+
+    @PostMapping("/video/examine")
+    public ResponseDetails doExamineVideo(@RequestBody ExamineVideoDto examineVideoDto){
+
+        System.out.println("请求审核视频"+examineVideoDto);
+
+
+        return ResponseDetails.ok();
     }
 
 

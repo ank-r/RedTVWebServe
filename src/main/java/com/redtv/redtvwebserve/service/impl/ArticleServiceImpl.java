@@ -1,5 +1,6 @@
 package com.redtv.redtvwebserve.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redtv.redtvwebserve.dao.ArticleDao;
 import com.redtv.redtvwebserve.dto.VideoArticleDto;
 import com.redtv.redtvwebserve.entity.ArticleEntity;
@@ -116,6 +117,72 @@ public class ArticleServiceImpl implements ArticleService {
 
         return articleInfoList;
     }
+
+    @Override
+    public List<ArticleInfo> getCategoryList(int categoryId) {
+
+        Map<String ,Object>  query = new HashMap<>(2);
+        query.put("examine_status",0);
+        query.put("category",categoryId);
+        List<ArticleEntity>  articleEntities = articleDao.selectByMap(query);
+        List<ArticleInfo> articleInfoList = new ArrayList<>(articleEntities.size());
+
+        for (ArticleEntity articleEntity : articleEntities){
+            ArticleInfo articleInfo = new ArticleInfo();
+            BeanUtils.copyProperties(articleEntity, articleInfo);
+
+            UserInfo userInfo = userService.getUserById(articleEntity.getUserId());
+            articleInfo.setUserInfo(userInfo);
+
+            articleInfoList.add(articleInfo);
+
+        }
+
+        return articleInfoList;
+    }
+
+    @Override
+    public List<ArticleInfo> getSearchList(String searchWorld) {
+
+        QueryWrapper<ArticleEntity> queryWrapper = new QueryWrapper<>();
+        // like 表示包含某个字符
+        // likeLeft 表示以某个字符结尾
+        // likeRight 表示以某个字符开头的
+        queryWrapper.like("title",searchWorld);
+
+        List<ArticleEntity>  articleEntities = articleDao.selectList(queryWrapper);
+
+        List<ArticleInfo> articleInfoList = new ArrayList<>(articleEntities.size());
+
+
+        for (ArticleEntity articleEntity : articleEntities){
+            ArticleInfo articleInfo = new ArticleInfo();
+            BeanUtils.copyProperties(articleEntity, articleInfo);
+
+            UserInfo userInfo = userService.getUserById(articleEntity.getUserId());
+            articleInfo.setUserInfo(userInfo);
+
+            articleInfoList.add(articleInfo);
+
+        }
+
+        return articleInfoList;
+
+
+    }
+
+
+    private ArticleInfo buildArticleInfo(ArticleEntity articleEntity){
+
+        ArticleInfo articleInfo = new ArticleInfo();
+        BeanUtils.copyProperties(articleEntity, articleInfo);
+
+        UserInfo userInfo = userService.getUserById(articleEntity.getUserId());
+        articleInfo.setUserInfo(userInfo);
+        return articleInfo;
+    }
+
+
 
 
 }
