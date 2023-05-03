@@ -41,7 +41,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public int sendComment(CommentDto commentDto) {
         CommentEntity commentEntity = new CommentEntity();
-
         commentEntity.setUserId(commentDto.getCommentUser());
         commentEntity.setComment(commentDto.getContent());
         commentEntity.setArticleId(commentDto.getArticleId());
@@ -58,7 +57,6 @@ public class CommentServiceImpl implements CommentService {
             messageDto.setArticleId(commentDto.getArticleId());
             messageService.senMessage(messageDto, MessageType.COMMENT);
         }
-
         return re;
     }
 
@@ -68,7 +66,6 @@ public class CommentServiceImpl implements CommentService {
         proper.put("article_id", videoId);
         List<CommentEntity> commentEntityList = commentDao.selectByMap(proper);
         List<CommentInfo> commentInfoList = new ArrayList<>(commentEntityList.size());
-
         for (CommentEntity commentEntity : commentEntityList){
             UserInfo userInfo = userService.getUserById(commentEntity.getUserId());
             CommentInfo commentInfo = new CommentInfo();
@@ -77,7 +74,6 @@ public class CommentServiceImpl implements CommentService {
             commentInfo.setNotifierUser(userInfo);
             commentInfoList.add(commentInfo);
         }
-
         return commentInfoList;
     }
 }

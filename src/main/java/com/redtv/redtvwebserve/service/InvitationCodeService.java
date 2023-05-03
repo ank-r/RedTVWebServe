@@ -19,4 +19,8 @@ public interface InvitationCodeService {
     InvitationCodeEntity create();
 
     List<InvitationCodeEntity> queryInvitation();
+
+    InvitationCodeEntity getInvitationCode(String code);
+
+    int useInvitationCode(InvitationCodeEntity invitationCodeEntity);
 }

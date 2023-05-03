@@ -2,7 +2,9 @@ package com.redtv.redtvwebserve.service.impl;
 
 import com.redtv.redtvwebserve.dao.UserDao;
 import com.redtv.redtvwebserve.dto.LoginDetails;
+import com.redtv.redtvwebserve.entity.InvitationCodeEntity;
 import com.redtv.redtvwebserve.entity.UserEntity;
+import com.redtv.redtvwebserve.service.InvitationCodeService;
 import com.redtv.redtvwebserve.service.LogInService;
 import com.redtv.redtvwebserve.vo.UserInfo;
 import org.springframework.beans.BeanUtils;
@@ -10,10 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.LoginException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @ClassName UserServiceImpl
@@ -28,9 +27,12 @@ public class LogInServiceImpl implements LogInService {
     private final UserDao userDao;
     private final RedisTemplate redisTemplate;
 
-    public LogInServiceImpl(UserDao userDao , RedisTemplate redisTemplate) {
+    private final InvitationCodeService invitationCodeService;
+
+    public LogInServiceImpl(UserDao userDao , RedisTemplate redisTemplate, InvitationCodeService invitationCodeService) {
         this.userDao = userDao;
         this.redisTemplate = redisTemplate;
+        this.invitationCodeService = invitationCodeService;
     }
 
 
@@ -90,6 +92,72 @@ public class LogInServiceImpl implements LogInService {
             throw new LoginException("请输入正确的用户名密码");
         }
 
+
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(userEntity, userInfo);
+
+        //生成token
+
+        String token = UUID.randomUUID().toString().replace("-", "");
+
+        redisTemplate.opsForValue().set(token, userInfo);
+
+        userInfo.setToken(token);
+
+
+        return  userInfo;
+    }
+
+    @Override
+    public UserInfo adminLogin(LoginDetails loginDetails) throws LoginException {
+
+        String userName = loginDetails.getUsername();
+        //
+        if (userName == null || userName == "" || userName.length() == 0){
+            throw new LoginException("请输入用户名！");
+        }
+
+        Map<String,Object> query = new HashMap<>(2);
+
+        query.put("username",userName);
+
+        //返回的是个列表，但是应该只有一个唯一用户
+        List<UserEntity> userEntityList =  userDao.selectByMap(query);
+
+        if (userEntityList.size()!=1 || userEntityList.get(0) == null){
+            throw new LoginException("请输入正确的用户名");
+        }
+
+
+
+        UserEntity userEntity = userEntityList.get(0);
+
+
+        if (!userEntity.getPassword().equals(loginDetails.getPassword())){
+            throw new LoginException("请输入正确的用户名密码");
+        }
+
+        if (userEntity.getIsAdmin() != 1){
+            if (loginDetails.getInvitationCode() == null ||loginDetails.getInvitationCode() == "" ){
+                throw new LoginException("请输入邀请码");
+            }
+
+            String invitationCode = loginDetails.getInvitationCode();
+
+            InvitationCodeEntity invitationCodeEntity = invitationCodeService.getInvitationCode(invitationCode);
+            if (Objects.isNull(invitationCodeEntity) || invitationCodeEntity.getUseStatus() == 0){
+                throw new LoginException("请输入正确的邀请码！");
+            }
+            userEntity.setIsAdmin(1);
+            invitationCodeEntity.setUseStatus(0);
+            invitationCodeEntity.setUseUser(userEntity.getId());
+            invitationCodeEntity.setUseTime(System.currentTimeMillis());
+            invitationCodeService.useInvitationCode(invitationCodeEntity);
+            userDao.updateById(userEntity);
+
+
+
+        }
 
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(userEntity, userInfo);

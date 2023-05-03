@@ -108,7 +108,7 @@ public class ArticleEntity {
 	private Integer status;
 
 
-	private Long score;
+	private Double score;
 
 	private Long scoreCount;
 

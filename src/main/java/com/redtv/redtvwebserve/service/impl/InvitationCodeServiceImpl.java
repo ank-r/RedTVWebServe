@@ -7,6 +7,7 @@ import com.redtv.redtvwebserve.utils.HostHolder;
 import com.redtv.redtvwebserve.vo.UserInfo;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -51,5 +52,25 @@ public class InvitationCodeServiceImpl implements InvitationCodeService {
 
 
         return invitationCodeDao.selectByMap(null);
+    }
+
+    @Override
+    public InvitationCodeEntity getInvitationCode(String code) {
+        HashMap<String , Object> select = new HashMap<>(4);
+
+        select.put("code",code);
+
+        List<InvitationCodeEntity> invitationCodeEntity= invitationCodeDao.selectByMap(select);
+        if (invitationCodeEntity.isEmpty()){
+            return null;
+        }
+
+        return invitationCodeEntity.get(0);
+    }
+
+    @Override
+    public int useInvitationCode(InvitationCodeEntity invitationCodeEntity) {
+      return   invitationCodeDao.updateById(invitationCodeEntity);
+
     }
 }

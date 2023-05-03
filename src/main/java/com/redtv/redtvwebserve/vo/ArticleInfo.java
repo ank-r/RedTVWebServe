@@ -37,7 +37,7 @@ public class ArticleInfo extends ArticleEntity {
       videoInfo.setCreateTime(System.currentTimeMillis());
       videoInfo.setUpdateTime(System.currentTimeMillis());
       videoInfo.setStatus(1);
-      videoInfo.setScore(210L);
+      videoInfo.setScore(1.2);
       videoInfo.setScoreCount(212L);
       videoInfo.setCommentCount(23123L);
       videoInfo.setDanmakuCount(121L);

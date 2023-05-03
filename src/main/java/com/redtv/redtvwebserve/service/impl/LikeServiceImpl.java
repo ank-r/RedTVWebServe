@@ -2,6 +2,7 @@ package com.redtv.redtvwebserve.service.impl;
 
 import com.redtv.redtvwebserve.dao.FavoritesTableDao;
 import com.redtv.redtvwebserve.dto.MessageDto;
+import com.redtv.redtvwebserve.entity.ArticleEntity;
 import com.redtv.redtvwebserve.entity.FavoritesTableEntity;
 import com.redtv.redtvwebserve.enums.MessageType;
 import com.redtv.redtvwebserve.service.ArticleService;
@@ -28,6 +29,8 @@ public class LikeServiceImpl implements LikeService {
     private final FavoritesTableDao favoritesTableDao;
     private final MessageService messageService;
     private final ArticleService articleService;
+
+
 
     public LikeServiceImpl(FavoritesTableDao favoritesTableDao, MessageService messageService, ArticleService articleService) {
         this.favoritesTableDao = favoritesTableDao;
@@ -58,6 +61,12 @@ public class LikeServiceImpl implements LikeService {
         favoritesTableEntity.setArticleId(videoId);
         favoritesTableEntity.setUserId(HostHolder.getUser().getId());
         favoritesTableEntity.setCreateTime(System.currentTimeMillis());
+
+        ArticleEntity articleEntity = articleService.getArticleEntityByid(videoId);
+        Long likeCount = articleEntity.getLikeCount() + 1L;
+        articleEntity.setViewCount(likeCount);
+        //点赞数量
+        articleService.updateArticle(articleEntity);
 
         int re = favoritesTableDao.insert(favoritesTableEntity);
         if (re>0){
@@ -91,6 +100,14 @@ public class LikeServiceImpl implements LikeService {
             int re = favoritesTableDao.deleteById(favoritesTableEntity.getId());
             if (re>0){
                 //取消点赞成功
+
+
+                ArticleEntity articleEntity = articleService.getArticleEntityByid(videoId);
+                Long likeCount = articleEntity.getLikeCount() - 1L;
+                articleEntity.setViewCount(likeCount);
+                //点赞数量
+                articleService.updateArticle(articleEntity);
+
                 return 1;
             }
             return 0;

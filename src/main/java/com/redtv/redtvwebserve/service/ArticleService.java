@@ -1,6 +1,7 @@
 package com.redtv.redtvwebserve.service;
 
 import com.redtv.redtvwebserve.dto.VideoArticleDto;
+import com.redtv.redtvwebserve.entity.ArticleEntity;
 import com.redtv.redtvwebserve.vo.ArticleInfo;
 
 import java.util.List;
@@ -40,4 +41,12 @@ public interface ArticleService {
     List<ArticleInfo> getCategoryList(int categoryId);
 
     List<ArticleInfo> getSearchList(String searchWorld);
+
+    int  updateArticle(ArticleEntity articleEntity);
+
+    ArticleEntity getArticleEntityByid(Long id);
+
+    List<ArticleInfo> getHotVideoList();
+
+    List<ArticleInfo> getFollowVideoList();
 }

@@ -50,6 +50,26 @@ public class LogInController {
 
     }
 
+    @PostMapping("/login/admin")
+    public ResponseDetails adminLogIn(@RequestBody LoginDetails loginDetails){
+        System.out.println("收到用户数据"+loginDetails.toString());
+
+        try {
+
+            UserInfo  userInfo =  logInService.adminLogin(loginDetails);
+
+            return ResponseDetails.ok().data(userInfo);
+
+        }catch (LoginException loginException){
+
+            return ResponseDetails.error(loginException.getMessage());
+        }
+
+
+
+
+    }
+
     /**
      * 用户注册
      * @return

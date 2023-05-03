@@ -54,7 +54,6 @@ public class FollowServiceImpl implements FollowService {
         if (isFollow == 1){
             return isFollow;
         }
-
         Map<String ,Object > query = new HashMap<>(8);
         query.put("user_id", HostHolder.getUser().getId());
         query.put("followed_id", userId);
@@ -68,9 +67,7 @@ public class FollowServiceImpl implements FollowService {
             if (re>0){
                 return 1;
             }
-
         }
-
         followEntity = new FollowEntity();
         followEntity.setUserId(HostHolder.getUser().getId());
         followEntity.setFollowedId(userId);
@@ -87,7 +84,6 @@ public class FollowServiceImpl implements FollowService {
 
             return 1;
         }
-
         return 0;
     }
 

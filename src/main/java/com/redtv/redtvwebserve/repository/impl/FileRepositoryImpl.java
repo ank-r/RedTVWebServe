@@ -48,22 +48,15 @@ public class FileRepositoryImpl implements FileRepository {
             String path = FileUtils.filePath();
             //文件后缀
             String suffix = FileUtils.getFileSuffix(file.getOriginalFilename());
-
             int fileType = FileUtils.checkFileType(suffix);
-
             if (fileType == FileUtils.NOT_SUPPORT){
                 throw  new FileNotFoundException("文件格式错误！");
             }
-
             if (fileType != type){
                 throw  new FileNotFoundException("请选择正确格式的文件！");
             }
-
-
-
             String newFileName = FileUtils.newFileName(suffix);
             System.out.println(newFileName);
-
             File dest = new File(path);
             if (!dest.exists() && !dest.mkdirs()) {
                 log.info("出现了一些问题");
@@ -75,20 +68,14 @@ public class FileRepositoryImpl implements FileRepository {
             }catch (Exception e){
                 log.info("文件上传失败，上传文件的用户ID：， 上传的文件名： {}",  file.getOriginalFilename());
             }
-
-
-
             // 获取文件的访问路径
             String fileUrl = FileUtils.fileUrl(newFileName);
             System.out.println(fileUrl);
 
             // fileUrl  视频或者图片的访问路径
             re.put("fileUrl", fileUrl);
-
-
             if(fileType == FileUtils.VIDEO){
                 //视频文件生成 截图封面
-
                 List<String > imgs  = FFmpegUtils.randomGrabberFFmpegImage(Paths.get(path, newFileName).toFile(), 6);
                 log.info("生成截图{}", imgs.size());
                 re.put("imgs", imgs);

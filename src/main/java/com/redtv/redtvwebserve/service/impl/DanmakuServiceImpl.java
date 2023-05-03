@@ -2,8 +2,10 @@ package com.redtv.redtvwebserve.service.impl;
 
 import com.redtv.redtvwebserve.dao.DanmakuDao;
 import com.redtv.redtvwebserve.dto.DanmakuDto;
+import com.redtv.redtvwebserve.entity.ArticleEntity;
 import com.redtv.redtvwebserve.entity.DanmakuEntity;
 import com.redtv.redtvwebserve.enums.ReturnCodeEnum;
+import com.redtv.redtvwebserve.service.ArticleService;
 import com.redtv.redtvwebserve.service.DanmakuService;
 import com.redtv.redtvwebserve.utils.DanmakuUtils;
 import com.redtv.redtvwebserve.vo.UserInfo;
@@ -29,10 +31,12 @@ public class DanmakuServiceImpl implements DanmakuService {
     private final DanmakuDao danmakuDao;
     private final RedisTemplate redisTemplate;
 
+    private final ArticleService articleService;
     @Autowired
-    public DanmakuServiceImpl(DanmakuDao danmakuDao,RedisTemplate redisTemplate) {
+    public DanmakuServiceImpl(DanmakuDao danmakuDao, RedisTemplate redisTemplate, ArticleService articleService) {
         this.danmakuDao = danmakuDao;
         this.redisTemplate = redisTemplate;
+        this.articleService = articleService;
     }
 
 
@@ -84,6 +88,13 @@ public class DanmakuServiceImpl implements DanmakuService {
         danmakuEntity.setType(danmakuDto.getType());
 
         danmakuDao.insert(danmakuEntity);
+
+
+        ArticleEntity articleEntity = articleService.getArticleEntityByid(danmakuEntity.getVideoId());
+        Long likeCount = articleEntity.getLikeCount() + 1L;
+        articleEntity.setViewCount(likeCount);
+        //点赞数量
+        articleService.updateArticle(articleEntity);
 
         return ReturnCodeEnum.SUCCESS;
     }

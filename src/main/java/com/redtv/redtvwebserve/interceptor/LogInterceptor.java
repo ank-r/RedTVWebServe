@@ -30,12 +30,9 @@ public class LogInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-
         String url = request.getRequestURI();
-
         if (url.startsWith("/get/file/") || url.startsWith("/danmaku/v3/")
-        || url.startsWith("/login/ordinary")||url.startsWith("/user/register")||url.startsWith("/upload/")
+        || url.startsWith("/login/ordinary")||url.startsWith("/login/admin")||url.startsWith("/user/register")||url.startsWith("/upload/")
                 ||url.startsWith("/captcha/get")
         ){
             //文件请求 , 或者弹幕请求 不用token验证
@@ -44,23 +41,15 @@ public class LogInterceptor implements HandlerInterceptor {
         //登录验证
         String  token = request.getHeader("Authorization");
         if ( token == null || token =="" || token.length() == 0 ){
-
             response.setCharacterEncoding("utf-8");
             response.setContentType("application/json; charset=utf-8");
             PrintWriter writer = response.getWriter();
             System.out.println("访问文件： " + url);
-
             writer.write("403");
             return false;
         }
-
-
-        System.out.println("********"+token);
-
         UserInfo userInfo = (UserInfo) redisTemplate.opsForValue().get(token);
-
         HostHolder.setUser(userInfo);
-
         return true;
     }
 

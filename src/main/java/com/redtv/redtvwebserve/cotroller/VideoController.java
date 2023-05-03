@@ -39,6 +39,21 @@ public class VideoController {
         return ResponseDetails.ok(videoInfoList);
     }
 
+    @GetMapping("/video/getFollowVideoList")
+    public ResponseDetails getFollowVideoList(){
+
+        List<ArticleInfo> videoInfoList = articleService.getHotVideoList();
+
+        return ResponseDetails.ok(videoInfoList);
+    }
+    @GetMapping("/video/getHotVideoList")
+    public ResponseDetails getHotVideoList(){
+
+        List<ArticleInfo> videoInfoList = articleService.getHotVideoList();
+
+        return ResponseDetails.ok(videoInfoList);
+    }
+
 
     @GetMapping("/video/getVideoById/{id}")
     public ResponseDetails getVideoById(@PathVariable String id){

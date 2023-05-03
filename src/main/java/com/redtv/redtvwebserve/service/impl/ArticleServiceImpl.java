@@ -39,13 +39,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public int publishVideo(VideoArticleDto videoArticleDto) {
-
         ArticleEntity articleEntity = new ArticleEntity();
-
         UserInfo userInfo = HostHolder.getUser();
-
         System.out.println(userInfo);
-
         articleEntity.setUserId(userInfo.getId());
         articleEntity.setTitle(videoArticleDto.getTitle());
         articleEntity.setImgUrl(videoArticleDto.getImgUrl());
@@ -55,15 +51,16 @@ public class ArticleServiceImpl implements ArticleService {
         articleEntity.setCreateTime(System.currentTimeMillis());
         articleEntity.setUpdateTime(System.currentTimeMillis());
        int re =  articleDao.insert(articleEntity);
-
-
         return re;
     }
 
     @Override
     public List<ArticleInfo> getVideoList() {
 
-        List<ArticleEntity>  articleEntities = articleDao.selectByMap(null);
+        QueryWrapper<ArticleEntity> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("create_time");
+
+        List<ArticleEntity>  articleEntities = articleDao.selectList(wrapper);
         List<ArticleInfo> articleInfoList = new ArrayList<>(articleEntities.size());
 
         for (ArticleEntity articleEntity : articleEntities){
@@ -90,8 +87,10 @@ public class ArticleServiceImpl implements ArticleService {
 
         UserInfo userInfo = userService.getUserById(articleEntity.getUserId());
         articleInfo.setUserInfo(userInfo);
-
-
+        Long vieCount = articleEntity.getCommentCount() + 1L;
+        articleEntity.setViewCount(vieCount);
+        //观看数量
+        articleDao.updateById(articleEntity);
 
         return articleInfo;
     }
@@ -142,18 +141,22 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public List<ArticleInfo> getSearchList(String searchWorld) {
+    public ArticleEntity getArticleEntityByid(Long id) {
+        return articleDao.selectById(id);
+    }
 
-        QueryWrapper<ArticleEntity> queryWrapper = new QueryWrapper<>();
-        // like 表示包含某个字符
-        // likeLeft 表示以某个字符结尾
-        // likeRight 表示以某个字符开头的
-        queryWrapper.like("title",searchWorld);
+    @Override
+    public List<ArticleInfo> getFollowVideoList() {
 
-        List<ArticleEntity>  articleEntities = articleDao.selectList(queryWrapper);
+
+
+
+        //列表查询
+
+        List<ArticleEntity>  articleEntities  = null;
+
 
         List<ArticleInfo> articleInfoList = new ArrayList<>(articleEntities.size());
-
 
         for (ArticleEntity articleEntity : articleEntities){
             ArticleInfo articleInfo = new ArticleInfo();
@@ -167,8 +170,48 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return articleInfoList;
+    }
 
+    @Override
+    public List<ArticleInfo> getHotVideoList() {
 
+        QueryWrapper<ArticleEntity> wrapper = new QueryWrapper<>();
+        wrapper.orderByDesc("score");
+        List<ArticleEntity>  articleEntities = articleDao.selectList(wrapper);
+        List<ArticleInfo> articleInfoList = new ArrayList<>(articleEntities.size());
+
+        for (ArticleEntity articleEntity : articleEntities){
+            ArticleInfo articleInfo = new ArticleInfo();
+            BeanUtils.copyProperties(articleEntity, articleInfo);
+            UserInfo userInfo = userService.getUserById(articleEntity.getUserId());
+            articleInfo.setUserInfo(userInfo);
+            articleInfoList.add(articleInfo);
+        }
+        return articleInfoList;
+    }
+
+    @Override
+    public List<ArticleInfo> getSearchList(String searchWorld) {
+
+        QueryWrapper<ArticleEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("title",searchWorld);
+        List<ArticleEntity>  articleEntities = articleDao.selectList(queryWrapper);
+        List<ArticleInfo> articleInfoList = new ArrayList<>(articleEntities.size());
+
+        for (ArticleEntity articleEntity : articleEntities){
+            ArticleInfo articleInfo = new ArticleInfo();
+            BeanUtils.copyProperties(articleEntity, articleInfo);
+            UserInfo userInfo = userService.getUserById(articleEntity.getUserId());
+            articleInfo.setUserInfo(userInfo);
+            articleInfoList.add(articleInfo);
+        }
+        return articleInfoList;
+    }
+
+    @Override
+    public int updateArticle(ArticleEntity articleEntity) {
+
+        return articleDao.updateById(articleEntity);
     }
 
 

@@ -30,4 +30,7 @@ public interface LogInService {
      */
     UserInfo userLogin(LoginDetails loginDetails) throws  LoginException ;
 
+    UserInfo adminLogin(LoginDetails loginDetails) throws  LoginException ;
+
+
 }
