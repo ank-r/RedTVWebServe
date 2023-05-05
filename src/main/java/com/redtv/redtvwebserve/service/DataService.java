@@ -30,7 +30,6 @@ public class DataService {
         String redisKey = RedisUtil.getUVKey(df.format(new Date()));
         redisTemplate.opsForHyperLogLog().add(redisKey,ip);
     }
-
     // 统计指定日期范围内的UV
     public long calculateUV(Date start,Date end){
         if(start == null || end ==null){
@@ -57,13 +56,11 @@ public class DataService {
         String redisKey = RedisUtil.getDAUKey(df.format(new Date()));
         redisTemplate.opsForValue().setBit(redisKey,userId,true);
     }
-
     // 统计指定日期范围内的DAU
     public long calculateDAU(Date start, Date end) {
         if (start == null || end == null) {
             throw new IllegalArgumentException("参数不能为空!");
         }
-
         // 整理该日期范围内的key
         List<byte[]> keyList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
@@ -73,7 +70,6 @@ public class DataService {
             keyList.add(key.getBytes());
             calendar.add(Calendar.DATE, 1);
         }
-
         // 进行OR运算
         return (long) redisTemplate.execute(new RedisCallback() {
             @Override
@@ -81,7 +77,6 @@ public class DataService {
                 String redisKey = RedisUtil.getDAUKey(df.format(start), df.format(end));
                 connection.bitOp(RedisStringCommands.BitOperation.OR,
                         redisKey.getBytes(),keyList.toArray(new byte[0][0]));
-
                 return connection.bitCount(redisKey.getBytes());
             }
         });

@@ -32,5 +32,8 @@ public interface UserService {
 
     void updatePassword(PasswordDto passwordDto) throws UpdateInfoException;
 
+    List<UserInfo> getFans(long userId);
+
+    List<UserInfo> getFollows(long userId);
 
 }

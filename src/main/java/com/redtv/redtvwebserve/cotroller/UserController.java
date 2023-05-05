@@ -77,6 +77,21 @@ public class UserController {
 
         return ResponseDetails.ok("success").data(userInfoList);
     }
+    @GetMapping("/user/getFans")
+    public ResponseDetails getFans(@RequestParam("userId") Long userId){
+
+        List<UserInfo>  userInfoList = userService.getFans(userId);
+
+        return ResponseDetails.ok("success").data(userInfoList);
+    }
+
+    @GetMapping("/user/getFollows")
+    public ResponseDetails getFollows(@RequestParam("userId") Long userId){
+
+        List<UserInfo>  userInfoList = userService.getFollows(userId);
+
+        return ResponseDetails.ok("success").data(userInfoList);
+    }
 
 
 

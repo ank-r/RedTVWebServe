@@ -4,8 +4,10 @@ import com.redtv.redtvwebserve.dto.ExamineVideoDto;
 import com.redtv.redtvwebserve.dto.VideoArticleDto;
 import com.redtv.redtvwebserve.service.ArticleService;
 import com.redtv.redtvwebserve.service.LikeService;
+import com.redtv.redtvwebserve.utils.HostHolder;
 import com.redtv.redtvwebserve.vo.ArticleInfo;
 import com.redtv.redtvwebserve.vo.ResponseDetails;
+import com.redtv.redtvwebserve.vo.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +44,8 @@ public class VideoController {
     @GetMapping("/video/getFollowVideoList")
     public ResponseDetails getFollowVideoList(){
 
-        List<ArticleInfo> videoInfoList = articleService.getHotVideoList();
+        UserInfo userInfo = HostHolder.getUser();
+        List<ArticleInfo> videoInfoList = articleService.getFollowVideoList(userInfo.getId());
 
         return ResponseDetails.ok(videoInfoList);
     }
@@ -87,6 +90,26 @@ public class VideoController {
         return ResponseDetails.ok(videoInfoList);
     }
 
+    @GetMapping("/video/getPublishList")
+    public ResponseDetails getPublishList(@RequestParam("userId") Long userId){
+
+
+        List<ArticleInfo> videoInfoList = articleService.getPublishedVideo(userId);
+
+        return ResponseDetails.ok(videoInfoList);
+    }
+
+
+    @GetMapping("/video/getLikeList")
+    public ResponseDetails getLikeList(@RequestParam("userId") long userId){
+
+        List<ArticleInfo> videoInfoList = articleService.getLikeVideo(userId);
+
+        return ResponseDetails.ok(videoInfoList);
+    }
+
+
+
     @GetMapping("/video/getExamineList")
     public ResponseDetails getExamineList(){
 
@@ -100,8 +123,15 @@ public class VideoController {
     public ResponseDetails doExamineVideo(@RequestBody ExamineVideoDto examineVideoDto){
 
         System.out.println("请求审核视频"+examineVideoDto);
+        articleService.doExamineVideo(examineVideoDto);
+        return ResponseDetails.ok();
+    }
 
+    @PostMapping("/video/delete/{videoId}")
+    public ResponseDetails removeVideo(@PathVariable("videoId") Long videoId){
 
+        System.out.println("删除的视频id + " + videoId);
+        articleService.removeVideo(videoId);
         return ResponseDetails.ok();
     }
 

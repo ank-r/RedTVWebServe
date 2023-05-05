@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 public class ExamineVideoDto {
-    private Integer videoId;
+    private Long videoId;
     private boolean result;
     private String message;
 }

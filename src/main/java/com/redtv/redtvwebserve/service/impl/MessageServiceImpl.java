@@ -98,13 +98,8 @@ public class MessageServiceImpl implements MessageService {
                 messageInfo.setArticleInfo(articleService.getVideoInfoById(notificationEntity.getCommentId()));
 
             }
-
             messageInfos.add(messageInfo);
-
-
         }
-
-
 
         return messageInfos;
     }
@@ -166,9 +161,6 @@ public class MessageServiceImpl implements MessageService {
 
         }
 
-
-
-
         return 1;
     }
 
@@ -202,8 +194,6 @@ public class MessageServiceImpl implements MessageService {
 
             messageInfoList.add(messageInfo);
         }
-
-
 
         return messageInfoList;
     }

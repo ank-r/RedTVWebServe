@@ -23,13 +23,11 @@ public class DataInterceptor implements HandlerInterceptor {
         // 统计UV
         String ip = request.getRemoteHost();
         dataService.recordUV(ip);
-
         // 统计DAU
         UserInfo user = HostHolder.getUser();
         if (user != null) {
             dataService.recordDAU(user.getId());
         }
-
         return true;
     }
 }

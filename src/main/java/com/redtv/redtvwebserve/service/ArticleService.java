@@ -1,5 +1,6 @@
 package com.redtv.redtvwebserve.service;
 
+import com.redtv.redtvwebserve.dto.ExamineVideoDto;
 import com.redtv.redtvwebserve.dto.VideoArticleDto;
 import com.redtv.redtvwebserve.entity.ArticleEntity;
 import com.redtv.redtvwebserve.vo.ArticleInfo;
@@ -46,7 +47,20 @@ public interface ArticleService {
 
     ArticleEntity getArticleEntityByid(Long id);
 
+    /**
+     * 热门视频
+     * @return
+     */
     List<ArticleInfo> getHotVideoList();
 
-    List<ArticleInfo> getFollowVideoList();
+    List<ArticleInfo> getFollowVideoList(Long userId);
+
+    void doExamineVideo(ExamineVideoDto examineVideoDto);
+
+    void removeVideo(Long videoId);
+
+    List<ArticleInfo> getPublishedVideo(Long userId);
+
+    List<ArticleInfo> getLikeVideo(Long userId);
+
 }

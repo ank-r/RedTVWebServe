@@ -1,11 +1,11 @@
 package com.redtv.redtvwebserve.cotroller;
 
+import com.redtv.redtvwebserve.dto.CategoryDto;
 import com.redtv.redtvwebserve.entity.CategoryEntity;
 import com.redtv.redtvwebserve.service.CategoryService;
 import com.redtv.redtvwebserve.vo.ResponseDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +37,18 @@ public class CategoryController {
         return ResponseDetails.ok().data(re);
     }
 
+    @PostMapping("/category/delete/")
+    public ResponseDetails removeCategory(@RequestBody CategoryDto categoryDto){
+        System.out.println(categoryDto);
+        categoryService.removeCategory(categoryDto);
+        return ResponseDetails.ok();
+    }
+    @PostMapping("/category/add/")
+    public ResponseDetails addCategory(@RequestBody CategoryDto categoryDto){
+        System.out.println(categoryDto);
+        categoryService.addCategory(categoryDto);
+        return ResponseDetails.ok();
+    }
     /**
      * 返回是列表
      * @return

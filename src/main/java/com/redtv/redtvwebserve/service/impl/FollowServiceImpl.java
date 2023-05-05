@@ -1,8 +1,10 @@
 package com.redtv.redtvwebserve.service.impl;
 
 import com.redtv.redtvwebserve.dao.FollowDao;
+import com.redtv.redtvwebserve.dao.UserDao;
 import com.redtv.redtvwebserve.dto.MessageDto;
 import com.redtv.redtvwebserve.entity.FollowEntity;
+import com.redtv.redtvwebserve.entity.UserEntity;
 import com.redtv.redtvwebserve.enums.MessageType;
 import com.redtv.redtvwebserve.service.FollowService;
 import com.redtv.redtvwebserve.service.MessageService;
@@ -24,10 +26,13 @@ import java.util.Map;
 @Service
 public class FollowServiceImpl implements FollowService {
     private final FollowDao followDao;
+
+    private final UserDao userDao;
     private MessageService messageService;
 
-    public FollowServiceImpl(FollowDao followDao, MessageService messageService) {
+    public FollowServiceImpl(FollowDao followDao, UserDao userDao, MessageService messageService) {
         this.followDao = followDao;
+        this.userDao = userDao;
         this.messageService = messageService;
     }
 
@@ -84,6 +89,12 @@ public class FollowServiceImpl implements FollowService {
 
             return 1;
         }
+
+        UserEntity user = userDao.selectById(HostHolder.getUser().getId());
+        UserEntity followUser = userDao.selectById(userId);
+        user.setFollowCount(user.getFollowCount()+1);
+        followUser.setFollowCount(followUser.getFollowCount()+1);
+
         return 0;
     }
 
@@ -106,6 +117,10 @@ public class FollowServiceImpl implements FollowService {
 
         }
 
+        UserEntity user = userDao.selectById(HostHolder.getUser().getId());
+        UserEntity followUser = userDao.selectById(userId);
+        user.setFollowCount(user.getFollowCount()-1);
+        followUser.setFollowCount(followUser.getFollowCount()-1);
         return 1;
     }
 }

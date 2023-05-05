@@ -1,6 +1,8 @@
 package com.redtv.redtvwebserve.service;
 
+import com.redtv.redtvwebserve.dto.CategoryDto;
 import com.redtv.redtvwebserve.entity.CategoryEntity;
+import com.redtv.redtvwebserve.exception.UpdateInfoException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,5 +45,11 @@ public interface CategoryService {
      * @return
      */
     CategoryEntity getCategoryById(int id);
+
+    void addCategory(CategoryDto categoryDto) throws UpdateInfoException;
+
+    void removeCategory(CategoryDto categoryDto) throws UpdateInfoException;
+
+
 
 }
